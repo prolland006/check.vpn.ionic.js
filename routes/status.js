@@ -3,9 +3,10 @@ var router = express.Router();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  let html = `<p>vpnOK :${vpnOK}</p>`;
-  res.writeHead(200, {'Content-Type': 'text/html'});
-  res.end(html);
+  const _status = {
+    'vpnOK' : vpnOK
+  };
+  res.send(_status);
 });
 
 module.exports = router;
