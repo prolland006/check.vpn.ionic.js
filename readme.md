@@ -1,8 +1,12 @@
-﻿check.vpn.ionic.js Documentation
+﻿check.vpn.server.js Documentation
 ======================
 Summary
 -------
-check you vpn via android
+Check your vpn via a node.js server. Request the server to get data or POST settings...
 ------------
+Setup
+-------
+npm i
+npm start
 
 

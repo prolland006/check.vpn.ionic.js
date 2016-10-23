@@ -31,6 +31,7 @@ let loop = function () {
                         .then(res => res.json())
                         .then(function (json) {
                             console.log(json);
+                            geolocData = json;
                         }).catch(function (err) {
                         console.log('geoloc error:', err);
                     });

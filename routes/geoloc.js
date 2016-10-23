@@ -3,11 +3,8 @@ var router = express.Router();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  const _status = {
-    'vpnOK' : vpnOK
-  };
-  console.log('vpnOK,',vpnOK);
-  res.send(_status);
+  const _geoloc = geolocData;
+  res.send(_geoloc);
 });
 
 module.exports = router;
