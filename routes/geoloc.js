@@ -1,6 +1,7 @@
 "use strict";
 var express = require('express');
 var router = express.Router();
+let geolocData = require('../app');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
