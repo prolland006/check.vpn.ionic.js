@@ -10,7 +10,9 @@ var status = require('./routes/status');
 var geoloc = require('./routes/geoloc');
 
 let vpnOK = false;
-let geolocData;
+let geolocData = null;
+module.exports = vpnOK;
+module.exports = geolocData;
 
 var app = express();
 

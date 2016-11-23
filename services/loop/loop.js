@@ -1,3 +1,6 @@
+"use strict";
+let vpnOK = require('../../app');
+let geolocData = require('../../app');
 const http = require('http');
 var fetch = require('node-fetch');
 const exec = require('child_process').exec;
