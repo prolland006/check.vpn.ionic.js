@@ -1,53 +1,63 @@
 "use strict";
-let vpnOK = require('../../app');
-let geolocData = require('../../app');
 const http = require('http');
-var fetch = require('node-fetch');
+const fetch = require('node-fetch');
 const exec = require('child_process').exec;
 
 let ipOrigin = '83.153.49.164';
 let ipVpn = '';
 
-let loop = function () {
+class loop {
 
-    setInterval(function () {
+    constructor(vpnOK = false, geolocData = null) {
+        this.vpnOK = vpnOK;
+        this.geolocData = geolocData;
+        setInterval(() => {
 
-        if (ipVpn == '') {
-            http.get('http://checkip.amazonaws.com', function (res) {
-                res.on('data', function (chunk) {
-                    ipVpn += chunk;
-                });
-                res.on('end', function () {
-                    // all data has been downloaded
-                    ipVpn = ipVpn.trim(ipVpn.substr(ipVpn.length - 1));
-                    console.log('ipVpn=', ipVpn);
-                    if (ipVpn == ipOrigin) {
-                        vpnOK = false;
-                        console.log('kill utorrent');
-                        exec('taskkill /f /IM utorrent.exe /T', (e, stdout, stderr)=> {
-                            console.log('unable to kill utorrent');
-                        });
-                    } else {
-                        vpnOK = true;
-                    }
-                    fetch(`http://nice-informatique-service.fr/geoip_service/geoip_service.php?ip=${ipVpn}&data=json`)
-                        .then(res => res.json())
-                        .then(function (json) {
-                            console.log(json);
-                            geolocData = json;
-                        }).catch(function (err) {
-                        console.log('geoloc error:', err);
+            if (ipVpn == '') {
+                http.get('http://checkip.amazonaws.com', (res) => {
+                    res.on('data', (chunk) => {
+                        ipVpn += chunk;
                     });
-                    ipVpn = ''
+                    res.on('end', () => {
+                        // all data has been downloaded
+                        ipVpn = ipVpn.trim(ipVpn.substr(ipVpn.length - 1));
+                        console.log('ipVpn=', ipVpn);
+                        if (ipVpn == ipOrigin) {
+                            this.vpnOK = false;
+                            console.log('kill utorrent');
+                            exec('taskkill /f /IM utorrent.exe /T', (e, stdout, stderr)=> {
+                                console.log('unable to kill utorrent');
+                            });
+                        } else {
+                            this.vpnOK = true;
+                        }
+                        fetch(`http://nice-informatique-service.fr/geoip_service/geoip_service.php?ip=${ipVpn}&data=json`)
+                            .then(res => res.json())
+                            .then((json) => {
+                                console.log('json=',json);
+                                this.geolocData = json;
+                            }).catch(function (err) {
+                            console.log('geoloc error:', err);
+                        });
+                        ipVpn = ''
+                    });
+                }).on('error', (e) => {
+                    console.log("Get ip error: " + e.message);
+                    exec('taskkill /f /IM utorrent.exe /T', (e, stdout, stderr)=> {
+                        console.log('unable to kill utorrent');
+                    });
                 });
-            }).on('error', function (e) {
-                console.log("Get ip error: " + e.message);
-                exec('taskkill /f /IM utorrent.exe /T', (e, stdout, stderr)=> {
-                    console.log('unable to kill utorrent');
-                });
-            });
-        }
-    }, 5000);
-}
+            }
+        }, 5000);
+    }
 
+    get _vpnOK() {
+        return this.vpnOK;
+    }
+
+    get _geolocData() {
+        return this.geolocData;
+    }
+
+}
 module.exports = loop;

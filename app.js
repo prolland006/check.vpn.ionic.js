@@ -5,17 +5,14 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+var loop_class = require('./services/loop/loop');
 var index = require('./routes/index');
 var status = require('./routes/status');
 var geoloc = require('./routes/geoloc');
 
-let vpnOK = false;
-let geolocData = null;
-module.exports = vpnOK;
-module.exports = geolocData;
-
 var app = express();
+
+var loop = new loop_class();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -70,6 +67,7 @@ app.use(function(err, req, res, next) {
   });
 });
 
-const loop = require('./services/loop/loop')();
-
-module.exports = app;
+module.exports = {
+  app : app,
+  loop : loop
+};
