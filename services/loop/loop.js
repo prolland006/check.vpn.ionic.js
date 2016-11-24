@@ -25,8 +25,14 @@ class loop {
                         if (ipVpn == ipOrigin) {
                             this.vpnOK = false;
                             console.log('kill utorrent');
-                            exec('taskkill /f /IM utorrent.exe /T', (e, stdout, stderr)=> {
-                                console.log('unable to kill utorrent');
+                            exec('taskkill /f /IM utorrent.exe /T', (error, stdout, stderr)=> {
+                                if (error) {
+                                    console.log('unable to kill utorrent');
+                                    console.error(`exec error: ${error}`);
+                                    return;
+                                }
+                                console.log(`stdout: ${stdout}`);
+                                console.log(`stderr: ${stderr}`);
                             });
                         } else {
                             this.vpnOK = true;
@@ -36,6 +42,7 @@ class loop {
                             .then((json) => {
                                 console.log('json=',json);
                                 this.geolocData = json;
+
                             }).catch(function (err) {
                             console.log('geoloc error:', err);
                         });
